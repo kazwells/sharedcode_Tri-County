@@ -1,3 +1,4 @@
+#libraries
 library(ggplot2)
 library(sf)
 library(ggmap)
@@ -7,32 +8,38 @@ library(tigris)
 library(leaflet)
 library(htmlwidgets)
 
-#Note: this is inprogress, only used 2014 data
+#Note: this is in progress, only used 2014 data
 
+#reading in excel
 voters <- read_excel("~/Benzarti_voterparty_city.xlsx")
 View(voters)
 
+#only CA
 california_border <- states(cb = TRUE) %>%
   filter(NAME == "California")
 
+#look at partisan lean
 voters <- voters %>%
   mutate(net_lean = share_dem + share_demind - share_rep + share_repind,
          leaning = case_when(net_lean > 0 ~ "Democrat", 
                              net_lean < 0 ~ "Republican", 
                              net_lean == 0 ~ "Tied"))
 
+#only in cities
 voters <- voters %>%
   filter(!is.na(city))
 
+#google API key
 register_google(key = "AIzaSyCElSkthY2YDXK0jqBtyoHoO_QyWwa_ZO0")
 
+#adding in CA after
 voters_geo <- voters %>%
   mutate(city_full = paste0(city, ", CA")) %>%  # If all are in California
   mutate_geocode(city_full, source = "google")
 
 View(voters_geo)
 
-
+#initial plot
 ggplot(voters_geo, aes(x = lon, y = lat)) +
   borders("state", regions = "california", fill = "gray95", color = "gray") +
   geom_point(aes(color = leaning, size = abs(net_lean)), alpha = 0.8) +
@@ -42,9 +49,11 @@ ggplot(voters_geo, aes(x = lon, y = lat)) +
        color = "Voter Lean",
        size = "Strength of Lean")
 
+#shapefile downlaod for map
 cities <- st_read("~/Downloads/tl_2023_06_place/tl_2023_06_place.shp")
 names(cities)
 
+#cleaning
 cities <- cities %>%
   mutate(NAME = str_to_lower(NAME))
 
@@ -54,12 +63,14 @@ voters <- voters %>%
 southern_ca <- cities %>%
   filter(NAME %in% voters$city)
 
+#map data
 map_data <- southern_ca %>%
   left_join(voters, by = c("NAME" = "city"))%>%
   mutate(net_lean = net_lean*100)
 
 View(map_data)
 
+#messing around with maps
 ggplot(map_data) +
   geom_sf(aes(fill = leaning)) +
   scale_fill_manual(values = c("Democrat" = "blue", "Republican" = "red", "Tied" = "purple")) +
