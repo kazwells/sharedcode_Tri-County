@@ -7,7 +7,7 @@ library(plotly)      # makes graphs interactive
 
 # set up the API keys from website
 
-api_key_SB <- "813f57df699445db829b6a694b6f9d9a"
+api_key_SB <- "my_key"
 
 series_id_SB <- "LAUCN060830000000003"
 
