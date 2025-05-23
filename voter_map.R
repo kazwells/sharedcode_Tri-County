@@ -11,7 +11,7 @@ library(htmlwidgets)
 #Note: this is in progress, only used 2014 data
 
 #reading in excel
-voters <- read_excel("~/Benzarti_voterparty_city.xlsx")
+voters <- read_excel("~/data.xlsx")
 View(voters)
 
 #only CA
@@ -30,7 +30,7 @@ voters <- voters %>%
   filter(!is.na(city))
 
 #google API key
-register_google(key = "AIzaSyCElSkthY2YDXK0jqBtyoHoO_QyWwa_ZO0")
+register_google(key = "my_key")
 
 #adding in CA after
 voters_geo <- voters %>%
