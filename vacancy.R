@@ -3,7 +3,7 @@ library(tidycensus)
 library(tidyverse)
 
 #defining census API key
-census_api_key("c4384d63f3d32a7ad13b1d29005bce56246dfa26", install = TRUE)
+census_api_key("my_key", install = TRUE)
 
 #years of interest
 years <- c(2010:2019, 2021:2023)
